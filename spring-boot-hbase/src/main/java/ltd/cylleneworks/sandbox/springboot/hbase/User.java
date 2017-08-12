@@ -23,11 +23,9 @@ public class User {
         return fullname;
     }
 
-    public String email() {
+    public String getEmail() {
         return email;
     }
 
-    public String getDob() {
-        return dob;
-    }
+    public String getDob() { return dob; }
 }

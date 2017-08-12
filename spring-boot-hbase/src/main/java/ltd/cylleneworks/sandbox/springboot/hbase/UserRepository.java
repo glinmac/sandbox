@@ -9,6 +9,8 @@ import org.springframework.data.hadoop.hbase.HbaseTemplate;
 import org.springframework.data.hadoop.hbase.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public class UserRepository {
 
@@ -24,14 +26,20 @@ public class UserRepository {
     private static byte[] qEmail = Bytes.toBytes("email");
     private static byte[] qDob = Bytes.toBytes("dob");
 
-    public User find(String username) {
-        return hbaseTemplate.get(tableName, username, new RowMapper<User>() {
+    public Optional<User> find(String username) {
+        logger.info("SSS");
+        return hbaseTemplate.get(tableName, username, new RowMapper<Optional<User>>() {
             @Override
-            public User mapRow(Result result, int rowNum) throws Exception {
-                return new User(Bytes.toString(result.getRow()),
-                        Bytes.toString(result.getValue(cfData, qFullname)),
-                        Bytes.toString(result.getValue(cfData, qEmail)),
-                        Bytes.toString(result.getValue(cfData, qDob)));
+            public Optional<User> mapRow(Result result, int rowNum) throws Exception {
+                logger.info("XXSSS");
+                if (result.size() > 0) {
+                    return Optional.of(new User(Bytes.toString(result.getRow()),
+                            Bytes.toString(result.getValue(cfData, qFullname)),
+                            Bytes.toString(result.getValue(cfData, qEmail)),
+                            Bytes.toString(result.getValue(cfData, qDob))));
+                } else {
+                    return Optional.empty();
+                }
             }
         });
     }

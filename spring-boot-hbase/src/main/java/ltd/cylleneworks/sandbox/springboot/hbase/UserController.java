@@ -13,6 +13,7 @@ public class UserController {
 
     @RequestMapping("/user/{username}")
     public User user(@PathVariable("username") String username) {
-        return userRepository.find(username);
+        return userRepository.find(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
     }
 }
