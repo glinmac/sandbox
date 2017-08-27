@@ -1,17 +1,23 @@
 package ltd.cylleneworks.sandbox.beam.lastfm1k;
 
+import org.apache.beam.examples.common.WriteOneFilePerWindow;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.io.TextIO;
 import org.apache.beam.sdk.options.Description;
 import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.transforms.*;
+import org.apache.beam.sdk.transforms.windowing.FixedWindows;
+import org.apache.beam.sdk.transforms.windowing.Window;
 import org.apache.beam.sdk.values.KV;
 import org.apache.beam.sdk.values.PCollection;
 import org.apache.beam.sdk.extensions.joinlibrary.Join;
 import org.apache.beam.sdk.values.TypeDescriptors;
+import org.joda.time.Duration;
+import org.joda.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 public class App {
 
@@ -76,6 +82,16 @@ public class App {
                 MapElements.into(TypeDescriptors.strings())
                     .via(input -> String.format("%s %s %s", input.getKey(), input.getValue().getKey().getArtistName(), input.getValue().getValue().getCountry())))
             .apply("Save to file", TextIO.write().to(options.getOutput() + "/join"));
+
+
+        // Windowing on listens
+        listens.apply("AddTimestamps", WithTimestamps.of((KV<String, Listen> l) -> Instant.parse(l.getValue().getTimestamp())))
+            .apply(Window.into(FixedWindows.of(Duration.standardMinutes(10))))
+            .apply(Count.perKey())
+            .apply(MapElements.into(TypeDescriptors.strings())
+            .via(input -> String.format("%s %s", input.getKey(), input.getValue())))
+        .apply(new WriteOneFilePerWindow(options.getOutput() + "/listenWindow", 1));
+
         p.run().waitUntilFinish();
     }
 }
