@@ -35,10 +35,11 @@ public class SaveAsBigQueryTable {
 
         TableSchema tableSchema = new TableSchema();
         List<TableFieldSchema> fields = new ArrayList<>();
-        fields.add(new TableFieldSchema().setName("id").setType("STRING"));
-        fields.add(new TableFieldSchema().setName("created_at").setType("STRING"));
+        fields.add(new TableFieldSchema().setName("id").setType("INT64"));
+        fields.add(new TableFieldSchema().setName("ts").setType("TIMESTAMP"));
         fields.add(new TableFieldSchema().setName("text").setType("STRING"));
         fields.add(new TableFieldSchema().setName("lang").setType("STRING"));
+        fields.add(new TableFieldSchema().setName("hashtags").setType("STRING").setMode("REPEATED"));
         tableSchema.setFields(fields);
 
         Counter parseFailures = Metrics.counter(SaveAsBigQueryTable.class, "unmatched");
@@ -62,11 +63,12 @@ public class SaveAsBigQueryTable {
                     row.set("id", d.id);
                     row.set("text", d.text);
                     row.set("lang", d.lang);
-                    row.set("created_at", d.created_at);
+                    row.set("ts", d.timestamp);
+                    row.set("hashtags", d.hashtags);
                     c.output(row);
                 }
             }))
-            .apply(BigQueryIO.writeTableRows()
+            .apply("Saving To BigQuery", BigQueryIO.writeTableRows()
                 .to(tableRef)
                 .withCreateDisposition(CreateDisposition.CREATE_IF_NEEDED)
                 .withWriteDisposition(WriteDisposition.WRITE_APPEND)
@@ -78,27 +80,22 @@ public class SaveAsBigQueryTable {
     interface SaveAsBigQueryTableOptions extends PipelineOptions {
         @Description("Path of the twitter data")
         String getTwitterData();
-
         void setTwitterData(String value);
 
         @Description("Output path")
         String getOutput();
-
         void setOutput(String value);
 
         @Description("BigQuery Project ID")
         String getProjectId();
-
         void setProjectId(String value);
 
         @Description("BigQuery Dataset ID")
         String getDataSetId();
-
         void setDataSetId(String value);
 
         @Description("BigQuery Table ID")
         String getTableId();
-
         void setTableId(String value);
 
     }

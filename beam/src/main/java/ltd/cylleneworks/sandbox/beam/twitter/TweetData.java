@@ -11,10 +11,10 @@ import java.util.List;
 //@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY )
 public class TweetData implements Serializable {
 
-    public String id;
+    public Long id;
     public String text;
     public String lang;
-    public String created_at;
+    public Long timestamp;
     public List<String> hashtags;
 
     TweetData() {}

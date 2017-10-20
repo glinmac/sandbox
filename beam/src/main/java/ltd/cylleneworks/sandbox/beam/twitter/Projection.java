@@ -62,8 +62,8 @@ public class Projection {
                 JsonObject data = new JsonParser().parse(c.element()).getAsJsonObject();
                 TweetData d = new TweetData();
 
-                d.id = data.get("id").getAsString();
-                d.created_at = data.get("created_at").getAsString();
+                d.id = data.get("id").getAsLong();
+                d.timestamp = data.get("timestamp_ms").getAsLong()/1000;
                 d.text = data.get("text").getAsString();
                 d.lang = data.get("lang").getAsString();
                 d.hashtags = new ArrayList<>();
