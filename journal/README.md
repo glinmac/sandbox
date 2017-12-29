@@ -1,0 +1,3 @@
+# Journal
+
+Some misc notes
