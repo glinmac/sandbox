@@ -17,6 +17,7 @@
         <hadoop.version>2.7.3</hadoop.version>
         <spring.hadoop.version>2.5.0.RELEASE</spring.hadoop.version>
         <hbase.version>1.2.6</hbase.version>
+        <spring-data-mock.version>1.1.4</spring-data-mock.version>
     </properties>
 
     <parent>
