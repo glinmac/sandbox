@@ -1,0 +1,17 @@
+steps:
+  - name: '${_SOURCE_GCR}/${_SOURCE_PROJECT}/cloud-builders/terraform'
+    env:
+      - 'TF_LOG=DEBUG'
+    args:
+      - 'init'
+      - '-input=false'
+      - '.'
+  - name: '${_SOURCE_GCR}/${_SOURCE_PROJECT}/cloud-builders/terraform'
+    args:
+      - 'plan'
+      - '-input=false'
+      - '.'
+
+substitutions:
+  _SOURCE_GCR: 'gcr.io'
+  _SOURCE_PROJECT: 'project'
