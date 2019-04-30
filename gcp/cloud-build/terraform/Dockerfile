@@ -2,6 +2,7 @@ FROM alpine:3.9
 
 # Mandatory build args
 ARG CLOUDSDK_VERSION
+ARG CLOUDSDK_SHA256SUM
 ARG TERRAFORM_VERSION
 ARG TERRAFORM_SHA256SUM
 ARG TERRAFORM_GOOGLE_PROVIDER_VERSION
@@ -47,8 +48,11 @@ RUN apk --update --no-cache add \
 
 RUN \
     curl -O ${CLOUDSDK_URL}/${CLOUDSDK_TARBALL} && \
+    echo "${CLOUDSDK_SHA256SUM}  ${CLOUDSDK_TARBALL}" > cloudsdk_SHA256SUMS && \
+    sha256sum -cs cloudsdk_SHA256SUMS && \
     tar xzf ${CLOUDSDK_TARBALL} -C /usr && \
     rm -f ${CLOUDSDK_TARBALL} && \
+    rm -f cloudsdk_SHA256SUMS && \
     ln -s /lib /lib64 && \
     gcloud config set core/disable_usage_reporting true && \
     gcloud config set component_manager/disable_update_check true && \
