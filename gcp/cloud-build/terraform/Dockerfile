@@ -101,8 +101,8 @@ RUN \
     sha256sum -cs terraform_SHA256SUMS && \
     unzip ${TF_RANDOM_ZIP} -d ${TERRAFORM_DIR} && \
     rm -f ${TF_RANDOM_ZIP} && \
-    rm -f terraform_SHA256SUMS  
-    
+    rm -f terraform_SHA256SUMS
+
 # NULL PROVIDER
 ENV TF_NULL_ZIP terraform-provider-null_${TERRAFORM_NULL_PROVIDER_VERSION}_linux_amd64.zip
 ENV TF_NULL_URL ${HASHICORP_URL}/terraform-provider-null/${TERRAFORM_NULL_PROVIDER_VERSION}
@@ -112,7 +112,7 @@ RUN \
     sha256sum -cs terraform_SHA256SUMS && \
     unzip ${TF_NULL_ZIP} -d ${TERRAFORM_DIR} && \
     rm -f ${TF_NULL_ZIP} && \
-    rm -f terraform_SHA256SUMS        
+    rm -f terraform_SHA256SUMS
 
 # GOOGLE PROVIDER
 ENV TF_GOOGLE_ZIP terraform-provider-google_${TERRAFORM_GOOGLE_PROVIDER_VERSION}_linux_amd64.zip
